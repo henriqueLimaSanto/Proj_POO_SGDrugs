@@ -8,8 +8,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -28,6 +31,12 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 	private TextField txtRG, txtCPF;
 	private TextField txtTelefone, txtEmail;
 	private TextField txtCartaoSus;
+	private TextField txtCEP;
+	private TextField txtRua, txtNum;
+	private TextField txtCid, txtUF;
+	private TextField txtPesquisa;
+	private TableView tblProb;
+	private Button btnAddProb, btnLimpaCampos, btnCadastrar;
 	
 	
 	@Override
@@ -42,6 +51,20 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		txtTelefone = new TextField();
 		txtEmail = new TextField();
 		txtCartaoSus = new TextField();
+		
+		txtCEP = new TextField();
+		txtRua = new TextField();
+		txtNum = new TextField();
+		txtCid = new TextField();
+		txtUF = new TextField();
+		
+		txtPesquisa = new TextField();
+		
+		btnLimpaCampos = new Button("LIMPAR CAMPOS");
+		btnCadastrar = new Button("CADASTRAR");
+		btnAddProb = new Button("ADICIONAR");
+		tblProb = new TableView<Object>();
+		tblProb.setMaxWidth(625);
 		
 		BorderPane pane = new BorderPane();
 		
@@ -58,6 +81,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		
 		VBox entradaInfoCli = new VBox(
 				new Label("INFORMAÇÕES RELACIONADAS AO CLIENTE"),
+				new Separator(),
 				new HBox(10, new Label("Nome: "), txtNome),
 				new HBox(10, new Label("Data Nascimento: "), txtDia, new Label("/"), txtMes, new Label("/"),txtAno),
 				new HBox(10, new Label("RG: "), txtRG, new Label("CPF: "), txtCPF),
@@ -65,12 +89,49 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 				new HBox(10, new Label("Cartão SUS: "), txtCartaoSus)
 		);
 		entradaInfoCli.setSpacing(10);
-		entradaInfoCli.setStyle("-fx-min-width: 50%; -fx-font-size: 12px");
-		HBox entradaInfoCliGeral = new HBox(entradaInfoCli);
+		entradaInfoCli.setStyle("-fx-min-width: 50%; -fx-font-size: 15px;");
 		entradaInfoCli.setPadding(new Insets(40));
 		
+		VBox entradaInfoEnd = new VBox(
+				new Label("INFORMAÇÕES DE ENDEREÇO"),
+				new Separator(),
+				new HBox(10, new Label("CEP.:"), txtCEP),
+				new HBox(10, new Label("Rua:"), txtRua, new Label("Número:"), txtNum),
+				new HBox(10, new Label("Cidade:"), txtCid, new Label("UF.:"), txtUF)
+		);
+		entradaInfoEnd.setSpacing(10);
+		entradaInfoEnd.setStyle("-fx-min-width: 50%; -fx-font-size: 15px"); 
+		entradaInfoEnd.setPadding(new Insets(0, 40, 40, 40));
 		
-		painelCad.getChildren().add(entradaInfoCli);
+		Label tituloProb = new Label("PROBLEMAS DE SAÚDE DO CLIENTE");
+		tituloProb.setStyle(" -fx-font-size: 15px");
+		VBox entradaTab = new VBox(
+				tituloProb,
+				new Separator(),
+				new HBox(txtPesquisa, new Button()),
+				btnAddProb,
+				tblProb
+		);
+		entradaTab.setPadding(new Insets(39, 40, 40, 40));
+		entradaTab.setSpacing(10);
+		
+		HBox hbBtns = new HBox(
+				btnLimpaCampos,
+				btnCadastrar
+		);
+		hbBtns.setPadding(new Insets(7, 0, 0, 0));
+		hbBtns.setStyle("-fx-min-width: 50%; -fx-font-size: 15px");
+		hbBtns.setAlignment(Pos.BASELINE_CENTER);
+		hbBtns.setSpacing(20);
+		
+		HBox entradaInfoGeral = new HBox(
+				new VBox(entradaInfoCli,entradaInfoEnd, hbBtns),
+				entradaTab
+		);
+		entradaInfoGeral.setPadding(new Insets(20, 0, 0, 0));
+		
+		painelCad.getChildren().add(entradaInfoGeral);
+		//painelCad.getChildren().add(entradaInfoEnd);
 		
 		Scene scene = new Scene(pane, 1100,600);
 		stage.setScene(scene);
@@ -86,6 +147,22 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 	}
 	
 	public void startStyle() {
+		String styleBtns = 
+				"-fx-background-color: #0095FE;"
+				+ "-fx-text-fill: white;"
+				+ "-fx-background-radius: 7;"
+				+ "-fx-min-width: 275px;"
+				+ "-fx-min-height: 40px;"
+				+ "-fx-cursor: hand;";
+		
+		String styleBtnAddProb =
+				"-fx-min-width: 625px;"
+				+ "-fx-background-color: #007F0E;"
+				+ "-fx-text-fill: white;"
+				+ "-fx-font-size: 15px;"
+				+ "-fx-background-radius: 8;"
+				+ "-fx-cursor: hand;";
+		
 		String styleBtn =
 				"-fx-background-radius: none;"
 				+ "-fx-min-width: 130px;"
@@ -100,7 +177,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		
 		String styleMenuTop = "-fx-background-color: #E0DACE";
 		
-		String styleEntradaDataNasc = "-fx-max-width: 100px;";
+		String styleEntradaDataNasc = "-fx-max-width: 130px;";
 		
 		String styleEntradas = "-fx-background-radius: 8;";
 		
@@ -109,15 +186,24 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		painelCad.setStyle(stylePainel);
 		painelMant.setStyle(stylePainel);
 		menuTop.setStyle(styleMenuTop);
-		txtNome.setStyle("-fx-min-width: 409px;" + styleEntradas);
+		txtNome.setStyle("-fx-min-width: 515px;" + styleEntradas);
 		txtDia.setStyle(styleEntradaDataNasc + styleEntradas);
 		txtMes.setStyle(styleEntradaDataNasc + styleEntradas);
 		txtAno.setStyle(styleEntradaDataNasc + styleEntradas);
-		txtRG.setStyle("-fx-min-width: 190px;" + styleEntradas);
-		txtCPF.setStyle("-fx-min-width: 190px;" + styleEntradas);
-		txtTelefone.setStyle("-fx-min-width: 160px;" + styleEntradas);
-		txtEmail.setStyle("-fx-min-width: 185px;" + styleEntradas);
-		txtCartaoSus.setStyle("-fx-min-width: 381px;" + styleEntradas);
+		txtRG.setStyle("-fx-min-width: 225px;" + styleEntradas);
+		txtCPF.setStyle("-fx-min-width: 259px;" + styleEntradas);
+		txtTelefone.setStyle("-fx-max-width: 186px;" + styleEntradas);
+		txtEmail.setStyle("-fx-min-width: 253px;" + styleEntradas);
+		txtCartaoSus.setStyle("-fx-min-width: 480px;" + styleEntradas);
+		txtCEP.setStyle("-fx-min-width: 530px; " + styleEntradas);
+		txtRua.setStyle("-fx-min-width: 228px; " + styleEntradas);
+		txtNum.setStyle("-fx-min-width: 227px; " + styleEntradas);
+		txtCid.setStyle("-fx-min-width: 207px; " + styleEntradas);
+		txtUF.setStyle("-fx-min-width: 259px; " + styleEntradas);
+		txtPesquisa.setStyle(styleEntradas + "-fx-font-size: 15px");
+		btnAddProb.setStyle(styleBtnAddProb);
+		btnLimpaCampos.setStyle(styleBtns);
+		btnCadastrar.setStyle(styleBtns);
 	}
 	
 	public void btnSelected(int btn) {
