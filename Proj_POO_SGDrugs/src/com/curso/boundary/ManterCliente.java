@@ -1,6 +1,13 @@
 package com.curso.boundary;
 
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+import java.io.FileInputStream;
+
+import com.curso.control.ControlClientes;
+
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -12,7 +19,6 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -24,7 +30,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 	private Button btnCadCli;
 	private Button btnMantCli;
 	private Pane painelCad;
-	private Pane painelMant;
+	private BorderPane painelMant;
 	private HBox menuTop;
 	private TextField txtNome;
 	private TextField txtDia, txtMes, txtAno;
@@ -35,12 +41,25 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 	private TextField txtRua, txtNum;
 	private TextField txtCid, txtUF;
 	private TextField txtPesquisa;
-	private TableView tblProb;
-	private Button btnAddProb, btnLimpaCampos, btnCadastrar;
+	private TextField txtNomePesquisa;
+	private TextField txtCPFPesquisa;
+	private TextField txtUFPesquisa;
+	private TextField txtCidadePesquisa;
+	private TableView tblProb, tblCli;
+	private Button btnAddProb, btnLimpaCampos, btnCadastrar, btnPesquisaProb, btnPesquisa;
+	
+	
+	ControlClientes cc;
 	
 	
 	@Override
 	public void start(Stage stage) throws Exception{
+		
+		cc = new ControlClientes();
+		painelCad = new Pane();
+		//painelMant = new BorderPane();
+
+//INICIO PAINEL CADASTRO-------------------------------------------------------------------------------
 		
 		txtNome = new TextField();
 		txtDia = new TextField();
@@ -65,19 +84,16 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		btnAddProb = new Button("ADICIONAR");
 		tblProb = new TableView<Object>();
 		tblProb.setMaxWidth(625);
+		ImageView iv = new ImageView(new Image(new FileInputStream("imgs\\icon.png")));
+		iv.setFitHeight(22);
+		iv.setFitWidth(22);
+		btnPesquisaProb = new Button("", iv);
 		
 		BorderPane pane = new BorderPane();
 		
 		btnCadCli = new Button("CADASTRO");
 		btnMantCli = new Button("GERENCIAMENTO");
 		menuTop = new HBox(btnCadCli, btnMantCli);
-		pane.setTop(menuTop);
-		
-		
-		painelCad = new Pane();
-		painelMant = new Pane();
-		StackPane painels = new StackPane(painelMant, painelCad);
-		pane.setCenter(painels);
 		
 		VBox entradaInfoCli = new VBox(
 				new Label("INFORMAÇÕES RELACIONADAS AO CLIENTE"),
@@ -108,7 +124,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		VBox entradaTab = new VBox(
 				tituloProb,
 				new Separator(),
-				new HBox(txtPesquisa, new Button()),
+				new HBox(txtPesquisa, btnPesquisaProb),
 				btnAddProb,
 				tblProb
 		);
@@ -131,7 +147,37 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		entradaInfoGeral.setPadding(new Insets(20, 0, 0, 0));
 		
 		painelCad.getChildren().add(entradaInfoGeral);
-		//painelCad.getChildren().add(entradaInfoEnd);
+
+//FIM PAINEL CADASTRO----------------------------------------------------------------------------------
+		
+//INICIO PAINEL GERENCIAMENTO--------------------------------------------------------------------------
+		
+		txtNomePesquisa = new TextField();
+		txtCPFPesquisa = new TextField();
+		txtUFPesquisa = new TextField();
+		txtCidadePesquisa = new TextField();
+		btnPesquisa = new Button("PESQUISAR");
+		tblCli = new TableView<Object>();
+		tblCli.setMinWidth(600);
+		
+		Label lblTitulo = new Label("PESQUISA CLIENTE");
+		HBox hb = new HBox(80,
+				new VBox(10,
+							lblTitulo,
+							new Separator(),
+							new HBox(10, new Label("Nome: "), txtNomePesquisa),
+							new HBox(10, new Label("CPF.: "), txtCPFPesquisa, new Label("UF.: "), txtUFPesquisa),
+							new HBox(10, new Label("Cidade: "), txtCidadePesquisa, btnPesquisa)
+						),
+				tblCli);
+		hb.setStyle("-fx-font-size: 15px;");
+		painelMant = new BorderPane(hb);
+		
+//FIM PAINEL GERENCIAMENTO-----------------------------------------------------------------------------
+		
+		pane.setTop(menuTop);
+		StackPane painels = new StackPane(painelMant, painelCad);
+		pane.setCenter(painels);
 		
 		Scene scene = new Scene(pane, 1100,600);
 		stage.setScene(scene);
@@ -141,12 +187,27 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		btnCadCli.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		btnMantCli.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		
+		
 		startStyle();
 		btnSelected(0);
+//		createTableColumns();
 		
 	}
 	
+	/*public void createTableColumnsClientes() {
+		
+	}*/
+	
 	public void startStyle() {
+		
+		String styleBtnPesquisa = 
+				"-fx-background-color: #0095FE;"
+				+ "-fx-text-fill: white;"
+				+ "-fx-background-radius: 7;"
+				+ "-fx-min-width: 240px;"
+				+ "-fx-min-height: 30px;"
+				+ "-fx-cursor: hand;";
+		
 		String styleBtns = 
 				"-fx-background-color: #0095FE;"
 				+ "-fx-text-fill: white;"
@@ -181,6 +242,15 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		
 		String styleEntradas = "-fx-background-radius: 8;";
 		
+		String styleEntradaPesquisa = "-fx-background-radius: 8px 0px 0px 8px;"
+				+ "-fx-min-width: 587px;";
+		
+		String stylePesquisaProb = "-fx-min-height: 30px;"
+				+ "-fx-min-width: 30px;"
+				+ "-fx-background-radius: 0px 8px 8px 0px;"
+				+ "-fx-background-color: #0095FE;"
+				+ "-fx-cursor: hand;";
+		
 		btnCadCli.setStyle(styleBtn);
 		btnMantCli.setStyle(styleBtn);
 		painelCad.setStyle(stylePainel);
@@ -200,10 +270,16 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		txtNum.setStyle("-fx-min-width: 227px; " + styleEntradas);
 		txtCid.setStyle("-fx-min-width: 207px; " + styleEntradas);
 		txtUF.setStyle("-fx-min-width: 259px; " + styleEntradas);
-		txtPesquisa.setStyle(styleEntradas + "-fx-font-size: 15px");
+		txtPesquisa.setStyle(styleEntradaPesquisa + "-fx-font-size: 15px");
 		btnAddProb.setStyle(styleBtnAddProb);
 		btnLimpaCampos.setStyle(styleBtns);
 		btnCadastrar.setStyle(styleBtns);
+		btnPesquisaProb.setStyle(stylePesquisaProb);
+		txtNomePesquisa.setStyle("-fx-min-width: 515px;" + styleEntradas);
+		txtCPFPesquisa.setStyle("-fx-min-width: 280px;" + styleEntradas);
+		txtUFPesquisa.setStyle("-fx-min-width: 200px;" + styleEntradas);
+		txtCidadePesquisa.setStyle("-fx-min-width: 262px;" + styleEntradas);
+		btnPesquisa.setStyle(styleBtnPesquisa);
 	}
 	
 	public void btnSelected(int btn) {

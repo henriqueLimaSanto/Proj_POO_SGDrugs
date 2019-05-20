@@ -7,7 +7,7 @@ public class Cliente {
 	
 	private String primeiroNome;
 	private Date dt_nasc;
-	private int rg, cpf, telefone;
+	private long rg, cpf, telefone;
 	private String email;
 	private int cartaoSUS;
 	private Endereco end;
@@ -25,19 +25,19 @@ public class Cliente {
 	public void setDt_nasc(Date dt_nasc) {
 		this.dt_nasc = dt_nasc;
 	}
-	public int getRg() {
+	public long getRg() {
 		return rg;
 	}
 	public void setRg(int rg) {
 		this.rg = rg;
 	}
-	public int getCpf() {
+	public long getCpf() {
 		return cpf;
 	}
 	public void setCpf(int cpf) {
 		this.cpf = cpf;
 	}
-	public int getTelefone() {
+	public long getTelefone() {
 		return telefone;
 	}
 	public void setTelefone(int telefone) {
