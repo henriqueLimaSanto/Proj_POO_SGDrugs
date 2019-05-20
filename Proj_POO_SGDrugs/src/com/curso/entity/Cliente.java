@@ -12,6 +12,7 @@ public class Cliente {
 	private int cartaoSUS;
 	private Endereco end;
 	private List<ProblemaSaude> problemasSaude;
+	
 	public String getPrimeiroNome() {
 		return primeiroNome;
 	}
