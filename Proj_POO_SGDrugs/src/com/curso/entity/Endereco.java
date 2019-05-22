@@ -2,13 +2,14 @@ package com.curso.entity;
 
 public class Endereco {
 	
-	private int cep, numero;
+	private String cep;
+	private int numero;
 	private String rua, cidade, uf;
 	
-	public int getCep() {
+	public String getCep() {
 		return cep;
 	}
-	public void setCep(int cep) {
+	public void setCep(String cep) {
 		this.cep = cep;
 	}
 	public int getNumero() {

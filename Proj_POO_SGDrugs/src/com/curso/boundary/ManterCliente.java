@@ -5,10 +5,24 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.swing.JOptionPane;
 
 import com.curso.control.ControlClientes;
+import com.curso.entity.Cliente;
+import com.curso.entity.Endereco;
+import com.curso.entity.ProblemaSaude;
 
 import javafx.application.Application;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyLongWrapper;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -16,6 +30,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -45,7 +60,9 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 	private TextField txtCPFPesquisa;
 	private TextField txtUFPesquisa;
 	private TextField txtCidadePesquisa;
-	private TableView tblProb, tblCli;
+	private TableView<Cliente> tblCli;
+	private TableView<ProblemaSaude> tblProb;
+	private List<ProblemaSaude> ps;
 	private Button btnAddProb, btnLimpaCampos, btnCadastrar, btnPesquisaProb, btnPesquisa;
 	
 	
@@ -60,6 +77,8 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		//painelMant = new BorderPane();
 
 //INICIO PAINEL CADASTRO-------------------------------------------------------------------------------
+		
+		ps = new ArrayList<ProblemaSaude>();
 		
 		txtNome = new TextField();
 		txtDia = new TextField();
@@ -78,11 +97,12 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		txtUF = new TextField();
 		
 		txtPesquisa = new TextField();
+		txtPesquisa.setPromptText("Insira a descrição do problema");
 		
 		btnLimpaCampos = new Button("LIMPAR CAMPOS");
 		btnCadastrar = new Button("CADASTRAR");
 		btnAddProb = new Button("ADICIONAR");
-		tblProb = new TableView<Object>();
+		tblProb = new TableView<ProblemaSaude>();
 		tblProb.setMaxWidth(625);
 		ImageView iv = new ImageView(new Image(new FileInputStream("imgs\\icon.png")));
 		iv.setFitHeight(22);
@@ -157,7 +177,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		txtUFPesquisa = new TextField();
 		txtCidadePesquisa = new TextField();
 		btnPesquisa = new Button("PESQUISAR");
-		tblCli = new TableView<Object>();
+		tblCli = new TableView<Cliente>();
 		tblCli.setMinWidth(600);
 		
 		Label lblTitulo = new Label("PESQUISA CLIENTE");
@@ -186,17 +206,154 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		
 		btnCadCli.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		btnMantCli.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
-		
+		btnCadastrar.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
+		btnAddProb.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
+		btnLimpaCampos.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
+		btnPesquisaProb.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
 		
 		startStyle();
 		btnSelected(0);
-//		createTableColumns();
+		createTableColumnsProb();
+		createTableColumnsClientes();
 		
 	}
 	
-	/*public void createTableColumnsClientes() {
+	@SuppressWarnings("unchecked")
+	public void createTableColumnsProb() {
+		tblProb.setItems(cc.getDataListPS());
 		
-	}*/
+		TableColumn<ProblemaSaude, Number> id_problema = new TableColumn<>("ID problema");
+		id_problema.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getId_problema()));
+		
+		TableColumn<ProblemaSaude, String> tipo = new TableColumn<>("Tipo");
+		tipo.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getTipo()));
+		
+		TableColumn<ProblemaSaude, String> desc = new TableColumn<>("Descrição");
+		desc.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getDesc_problema()));
+		
+		TableColumn<ProblemaSaude, Button> btnExcluir = new TableColumn<>("Excluir");
+		btnExcluir.setCellValueFactory(item -> new ReadOnlyObjectWrapper<>(item.getValue().getBtnExcluir()));
+		
+		tblProb.getColumns().addAll(id_problema, tipo, desc, btnExcluir);
+		setFunctionProbButtons();
+	}
+	
+	private void setFunctionProbButtons() {
+		for(int i=0; i<tblProb.getItems().size(); i++) {		
+			
+			final int l = i;
+			
+			tblProb.getItems().get(i).getBtnExcluir().setOnAction(e -> {
+				System.out.println("teste");
+				cc.removerProb(tblProb.getItems().get(l).getId_problema());
+				setFunctionProbButtons();
+			});
+			
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void createTableColumnsClientes() {
+		
+		TableColumn<Cliente, String> nomeCompleto = new TableColumn<>("Nome completo");
+		nomeCompleto.setPrefWidth(284);
+		nomeCompleto.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getPrimeiroNome()));
+		
+		TableColumn<Cliente, Number> cpf = new TableColumn<>("CPF");
+		cpf.setStyle("-fx-alignment: CENTER;");
+		cpf.setCellValueFactory(item -> new ReadOnlyLongWrapper(item.getValue().getCpf()));
+		
+		TableColumn<Cliente, String> uf = new TableColumn<>("UF");
+		uf.setPrefWidth(50);
+		uf.setStyle("-fx-alignment: CENTER;");
+		uf.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getEnd().getUf()));
+		
+		TableColumn<Cliente, Button> columnEditar = new TableColumn<>("Editar");
+		columnEditar.setPrefWidth(81);
+		columnEditar.setStyle("-fx-alignment: CENTER;");
+		columnEditar.setCellValueFactory(item -> new ReadOnlyObjectWrapper<>(item.getValue().getBtnEditar()));
+		
+		TableColumn<Cliente, Button> columnExcluir = new TableColumn<>("Excluir");
+		columnExcluir.setPrefWidth(81);
+		columnExcluir.setStyle("-fx-alignment: CENTER;");
+		columnExcluir.setCellValueFactory(item -> new ReadOnlyObjectWrapper<>(item.getValue().getBtnExcluir()));
+		
+		tblCli.getColumns().addAll(nomeCompleto, cpf, uf, columnEditar, columnExcluir);	
+		tblCli.setItems(cc.getDataListClientes());
+		setFunctionCliButtons();
+		
+	}
+	
+	private void setFunctionCliButtons() {
+		for(int i=0; i<tblCli.getItems().size(); i++) {		
+			
+			final int l = i;
+			
+			tblCli.getItems().get(i).getBtnEditar().setOnAction(e -> {
+				Cliente c = cc.pesquisarCliente((long) tblCli.getItems().get(l).getCpf());
+				ControlClientes.clientSel = c;
+				clienteToBoundary(c);
+				painelCad.toFront();
+				btnSelected(0);
+				cc.attTableProb(c.getProblemasSaude());
+				tblProb.refresh();
+				setFunctionProbButtons();
+				btnCadCli.setText("ALTERAÇÃO");
+				btnCadastrar.setText("ALTERAR");
+				btnLimpaCampos.setText("CANCELAR ALTERAÇÃO");
+			});
+			
+			tblCli.getItems().get(i).getBtnExcluir().setOnAction(e -> {
+				Cliente c = cc.pesquisarCliente((long) tblCli.getItems().get(l).getCpf());
+				ControlClientes.clientSel = c;
+				cc.removerCliente();
+				setFunctionCliButtons();
+				limparCampos();
+			});
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void clienteToBoundary(Cliente c) {
+		this.txtNome.setText(c.getPrimeiroNome());
+		this.txtDia.setText(Integer.toString(c.getDt_nasc().getDate()));
+		this.txtMes.setText(Integer.toString(c.getDt_nasc().getMonth()));
+		this.txtAno.setText(Integer.toString(c.getDt_nasc().getYear()));
+		this.txtRG.setText(Long.toString(c.getRg()));
+		this.txtCPF.setText(Long.toString(c.getCpf()));
+		this.txtTelefone.setText(Long.toString(c.getTelefone()));
+		this.txtEmail.setText(c.getEmail());
+		this.txtCartaoSus.setText(Long.toString(c.getCartaoSUS()));
+		Endereco ed = c.getEnd();
+		this.txtCEP.setText(ed.getCep());
+		this.txtRua.setText(ed.getRua());
+		this.txtNum.setText(Integer.toString(ed.getNumero()));
+		this.txtCid.setText(ed.getCidade());
+		this.txtUF.setText(ed.getUf());
+	}
+	
+	@SuppressWarnings("deprecation")
+	public Cliente boundaryToCliente() {
+		Cliente c = new Cliente();
+		c.setPrimeiroNome(this.txtNome.getText());
+		c.setDt_nasc(new Date(Integer.parseInt(this.txtAno.getText()), Integer.parseInt(this.txtMes.getText()), Integer.parseInt(this.txtDia.getText())));
+		c.setRg(Long.parseLong(this.txtRG.getText()));
+		c.setCpf(Long.parseLong(this.txtCPF.getText()));
+		c.setTelefone(Long.parseLong(this.txtTelefone.getText()));
+		c.setEmail(this.txtEmail.getText());
+		c.setCartaoSUS(Long.parseLong(this.txtCartaoSus.getText()));
+		
+		Endereco ed = new Endereco();
+		ed.setCep(this.txtCEP.getText());
+		ed.setRua(this.txtRua.getText());
+		ed.setNumero(Integer.parseInt(this.txtNum.getText()));
+		ed.setCidade(this.txtCid.getText());
+		ed.setUf(this.txtUF.getText());
+		c.setEnd(ed);
+	
+		c.setProblemasSaude(ControlClientes.clientSel.getProblemasSaude());
+		return c;
+	}
 	
 	public void startStyle() {
 		
@@ -315,14 +472,75 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 	@Override
 	public void handle(MouseEvent e) {
 		if(e.getSource() == btnCadCli) {
-			//System.out.println("teste");
 			painelCad.toFront();
-			btnSelected(0);
+			btnSelected(0);	
 		}else
 		if(e.getSource() == btnMantCli) {
 			painelMant.toFront();
 			btnSelected(1);
+		}else
+		if(e.getSource() == btnCadastrar) {
+			if(btnCadastrar.getText().equals("CADASTRAR")) {
+				JOptionPane.showMessageDialog(null, "cadastro realizado !!!", "Cadastro", JOptionPane.INFORMATION_MESSAGE);
+				cc.cadCliente(boundaryToCliente());
+				tblCli.refresh();
+			}else {
+				cc.attCliente(boundaryToCliente());
+				JOptionPane.showMessageDialog(null, "Alterações realizadas com sucesso", "Alteração concluida", JOptionPane.INFORMATION_MESSAGE);
+				tblCli.refresh();
+			}
+			limparCampos();
+			setFunctionCliButtons();
+		}else
+		if(e.getSource() == btnAddProb) {
+			ProblemaSaude ps = cc.pesquisarProb(this.txtPesquisa.getText());
+			if(ControlClientes.clientSel == null) {
+				ControlClientes.clientSel = new Cliente();
+			}
+			if(!ControlClientes.clientSel.existProb(ps.getId_problema())) {
+				ControlClientes.clientSel.getProblemasSaude().add(ps);
+			}
+			cc.attTableProb();
+		}else
+		if(e.getSource() == btnLimpaCampos) {
+			limparCampos();
+		}else
+		if(e.getSource() == btnPesquisaProb) {
+			ProblemaSaude ps = cc.pesquisarProb(this.txtPesquisa.getText());
+			if(ps != null) {
+				if(ControlClientes.clientSel == null) {
+					ControlClientes.clientSel = new Cliente();
+				}
+				if(!ControlClientes.clientSel.existProb(ps.getId_problema())) {
+					ControlClientes.clientSel.getProblemasSaude().add(ps);
+				}
+				cc.attTableProb();
+			}else {
+				JOptionPane.showMessageDialog(null, "Problema não encontrado");
+			}
 		}
+	}
+	
+	public void limparCampos() {
+		btnCadastrar.setText("CADASTRAR");
+		btnCadCli.setText("CADASTRO");
+		btnLimpaCampos.setText("LIMPAR CAMPOS");
+		this.txtNome.setText("");
+		this.txtDia.setText("");
+		this.txtMes.setText("");
+		this.txtAno.setText("");
+		this.txtRG.setText("");
+		this.txtCPF.setText("");
+		this.txtTelefone.setText("");
+		this.txtEmail.setText("");
+		this.txtCartaoSus.setText("");
+		this.txtCEP.setText("");
+		this.txtRua.setText("");
+		this.txtNum.setText("");
+		this.txtCid.setText("");
+		this.txtUF.setText("");
+		this.txtPesquisa.setText("");
+		cc.attTableProb(new ArrayList<ProblemaSaude>());
 	}
 
 }

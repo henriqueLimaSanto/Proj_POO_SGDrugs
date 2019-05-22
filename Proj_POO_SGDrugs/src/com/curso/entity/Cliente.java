@@ -1,7 +1,10 @@
 package com.curso.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javafx.scene.control.Button;
 
 public class Cliente {
 	
@@ -9,10 +12,25 @@ public class Cliente {
 	private Date dt_nasc;
 	private long rg, cpf, telefone;
 	private String email;
-	private int cartaoSUS;
+	private long cartaoSUS;
 	private Endereco end;
 	private List<ProblemaSaude> problemasSaude;
 	
+	private Button btnEditar;
+	private Button btnExcluir;
+	
+	public Cliente() {
+		this.btnEditar = new Button("Editar");
+		this.btnExcluir = new Button("Excluir");
+		this.problemasSaude = new ArrayList<ProblemaSaude>();
+	}
+	
+	public Button getBtnEditar() {
+		return btnEditar;
+	}
+	public Button getBtnExcluir() {
+		return btnExcluir;
+	}
 	public String getPrimeiroNome() {
 		return primeiroNome;
 	}
@@ -28,19 +46,19 @@ public class Cliente {
 	public long getRg() {
 		return rg;
 	}
-	public void setRg(int rg) {
+	public void setRg(long rg) {
 		this.rg = rg;
 	}
 	public long getCpf() {
 		return cpf;
 	}
-	public void setCpf(int cpf) {
+	public void setCpf(long cpf) {
 		this.cpf = cpf;
 	}
 	public long getTelefone() {
 		return telefone;
 	}
-	public void setTelefone(int telefone) {
+	public void setTelefone(long telefone) {
 		this.telefone = telefone;
 	}
 	public String getEmail() {
@@ -49,10 +67,10 @@ public class Cliente {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public int getCartaoSUS() {
+	public long getCartaoSUS() {
 		return cartaoSUS;
 	}
-	public void setCartaoSUS(int cartaoSUS) {
+	public void setCartaoSUS(long cartaoSUS) {
 		this.cartaoSUS = cartaoSUS;
 	}
 	public Endereco getEnd() {
@@ -68,6 +86,14 @@ public class Cliente {
 		this.problemasSaude = problemasSaude;
 	}
 	
+	public boolean existProb(int id) {
+		for(ProblemaSaude ps : problemasSaude) {
+			if(ps.getId_problema() == id) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	
 }
