@@ -1,5 +1,7 @@
 package com.curso.boundary;
 
+import javax.swing.JOptionPane;
+
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -141,6 +143,8 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 	}
 	@Override
 	public void handle(MouseEvent event) {
-		
+		if(event.getSource()==btnAvancar) {
+			JOptionPane.showMessageDialog(null, "Avançar teste!");
+		}
 	}
 }
