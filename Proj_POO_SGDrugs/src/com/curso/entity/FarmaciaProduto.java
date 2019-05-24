@@ -6,6 +6,14 @@ public class FarmaciaProduto {
 	//private Grupo grupo;
 	private int qntdEstoque;
 	private double preco;
+	
+	
+	public Farmacia getFarmacia() {
+		return farmacia;
+	}
+	public void setFarmacia(Farmacia farmacia) {
+		this.farmacia = farmacia;
+	}
 	private Farmacia farmacia;
 	
 	public Produto getProduto() {
