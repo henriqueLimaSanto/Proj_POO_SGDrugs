@@ -2,11 +2,7 @@ package com.curso.boundary;
 
 import javax.swing.JOptionPane;
 
-import com.curso.control.ControlClientes;
-import com.curso.entity.Cliente;
-
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,21 +17,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 public class ClientePreVendas extends Application implements EventHandler<MouseEvent>{
 	// Paineis Realizar Vendas(RV) InfoCliente(IC), Grid
 	private Pane PaneRV,PaneIC;
 	private GridPane panegrid;
-	// box´s verticais / horizontais
-	private VBox btnAvancarInfo,RV,IC,Infos;
+	// boxÂ´s verticais / horizontais
+	private VBox btnAvancarInfo,RV,Infos;
+	private GridPane IC;
 	private HBox btnsRV;
 	// realizar venda
 	private TextField cpfCliente;
@@ -43,11 +32,8 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 	private Label RealVendas,InfoAvancar;
 	// info cliente
 	private Label InfoCliente,nameClient,cpfClient,idadeClient,sexClient;
-	private Label ruaClient,nClient,cidadeClient;
+	private Label ruaClient,nClient,bairroClient;
 	private Button btnAvancarSDef;
-	
-	private ControlClientes cc;
-	private Calendar time;
 	@Override
 	public void start(Stage stgPreV) throws Exception {
 		// Box REALIZAR VENDA
@@ -55,8 +41,8 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 		cpfCliente 			= new TextField();
 		cpfCliente.setPromptText("Insira o CPF do Cliente");//Funciona como um placeholder
 		btnPesquisar 		= new Button("PESQUISAR");
-		btnAvancar 			= new Button("AVANÇAR");
-		InfoAvancar 		= new Label("Necessario definir um Cliente");
+		btnAvancar 			= new Button("AVANÃ‡AR");
+		InfoAvancar 		= new Label("Necessario definir um cliente");
 		// Box Info Cliente
 		InfoCliente 		= new Label("INFO. CLIENTE");
 		nameClient 			= new Label();
@@ -65,175 +51,130 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 		sexClient 			= new Label();
 		ruaClient 			= new Label();
 		nClient 			= new Label();
-		cidadeClient 		= new Label();
-		btnAvancarSDef 		= new Button("AVANÇAR SEM DEFINIR CLIENTE");
-		// Paineis Realizar Venda, Informação Cliente e o grid
+		bairroClient 		= new Label();
+		btnAvancarSDef 		= new Button("AVANÃ‡AR SEM DEFINIR CLIENTE");
+		// Paineis Realizar Venda, InformaÃ§Ã£o Cliente e o grid
 		panegrid 			= new GridPane();
 		PaneRV 				= new Pane();
+		PaneRV.setStyle("-fx-background-color: green;");
+
 		PaneIC 				= new Pane();
 		// Adicionando no grid os dois paineis
-		panegrid.add(PaneRV, 1,0);
-		panegrid.add(PaneIC, 2,0);
+		//panegrid.add(PaneRV, 1,0);
+		//panegrid.add(PaneIC, 2,0);
 //													INICIO REALIZAR VENDAS
 
-		btnAvancarInfo 		= new VBox(btnAvancar,InfoAvancar);
+		btnAvancarInfo 		= new VBox(5, btnAvancar,InfoAvancar);
+		btnAvancarInfo.setAlignment(Pos.TOP_CENTER);
 		btnsRV 				= new HBox(btnPesquisar,btnAvancarInfo);
-		RV 					= new VBox(RealVendas,new Separator(),cpfCliente,btnsRV);
+		VBox entradaPesq = new VBox(10, cpfCliente,btnsRV);
+		entradaPesq.setAlignment(Pos.CENTER);
+		RV 					= new VBox(RealVendas, entradaPesq);
 		PaneRV.getChildren().add(RV);
 		
 //													FIM REALIZAR VENDAS
 		
-//													INICIO INFORMAÇÃO CLIENTE
+//													INICIO INFORMAÃ‡ÃƒO CLIENTE
 		
 		Infos 				= new VBox(new HBox(10,new Label("Nome: "),nameClient)
 				        	 ,new HBox(10,new Label("CPF: "),cpfClient)
 				  	         ,new HBox(10,new Label("Idade: "),idadeClient
 				  				         ,new Label(" Sexo: "),sexClient)
-				  	         ,new HBox(10,new Label("Endereço: "),ruaClient
-				  	         ,new Label(", n°"),nClient
-				  	         ,new Label(" "),cidadeClient));
-		IC 					= new VBox(InfoCliente,new Separator(),Infos,btnAvancarSDef);
+				  	         ,new HBox(10,new Label("EndereÃ§o: "),ruaClient
+				  	         ,new Label(", nÂ°"),nClient
+				  	         ,new Label(" "),bairroClient));
+		//IC 					= new VBox(InfoCliente,Infos,btnAvancarSDef);
+		IC 					= new GridPane();
+		IC.add(InfoCliente, 0, 0);
+		IC.add(Infos, 0, 1);
+		IC.add(btnAvancarSDef, 0, 2);
 		PaneIC.getChildren().add(IC);
 		
-//													FIM INFORMAÇÃO CLIENTE
+		panegrid.add(RV, 0, 0);
+		panegrid.add(IC, 1, 0);
+		
+//													FIM INFORMAÃ‡ÃƒO CLIENTE
 		
 		Styles();
-		Scene MainScene 	= new Scene(panegrid, 900,380);
-		stgPreV.setScene(MainScene);
-		stgPreV.setTitle("Seleção de Cliente - Pré Tela de Vendas");
+		Scene mainScene = new Scene(panegrid, 1360, 700);
+		stgPreV.setScene(mainScene);
+		stgPreV.setTitle("SeleÃ§Ã£o de Cliente - PrÃ© Tela de Vendas");
 		stgPreV.show();
+		
+		RV.setPrefHeight(panegrid.getHeight());
+		RV.setPrefWidth(panegrid.getWidth() * 0.67);
+		IC.setPrefHeight(panegrid.getHeight());
+		IC.setPrefWidth(panegrid.getWidth() * 0.33);
+
+		
+		
 	}
 	
 	public void Styles() {
 		// styles
 			//									STYLE REALIZAR VENDA
 				PaneRV.setPrefWidth(600);
-				btnsRV.setStyle("-fx-min-width: 50%; -fx-font-size: 15px");
+				btnsRV.setStyle("-fx-min-width: 800px; -fx-font-size: 15px;");
 				btnsRV.setAlignment(Pos.BASELINE_CENTER);
 				btnsRV.setSpacing(30);
-				RV.setPadding(new Insets(35));
-				RV.setStyle("-fx-font-family:'Arial';");
+				RV.setPadding(new Insets(10));
+				RV.setStyle("-fx-font-family:'Arial'; -fx-background-color: #FFFFFF");
 				RV.setAlignment(Pos.BASELINE_CENTER);
-				RV.setSpacing(10);
+				RV.setSpacing(190);
 				
-				RealVendas.setStyle("-fx-font-size: 40px;");
-				RealVendas.setPadding(new Insets(20,0,0,0));
-				cpfCliente.setStyle("-fx-min-width:500px;"+
+				RealVendas.setStyle("-fx-font-size: 24px;");
+				//RealVendas.setPadding(new Insets(20,0,0,0));
+				cpfCliente.setStyle("-fx-max-width:800px;"+
 								    "-fx-min-height:35px;"+
-								    "-fx-font-size:15px;");
+								    "-fx-font-size:15px;"
+								    + "-fx-background-radius: 8;");
 				btnPesquisar.setStyle("-fx-background-color:#00BFFF;"+
 									  "-fx-background-radius:8px;"+
-									  "-fx-min-width:250px;"+
+									  "-fx-min-width:386px;"+
 									  "-fx-min-height:35px;"+
 									  "-fx-font-size:15px;"+
-									  "-fx-text-fill: white;"+
+									  "-fx-text-fill: white;"
+									  + "-fx-cursor: hand;"+
 									  "-fx-border-radius:8px;");
 				btnAvancar.setStyle("-fx-background-color:#228B22;"+
 									"-fx-background-radius:8px;"+
-									"-fx-min-width:250px;"+
+									"-fx-min-width:386px;"+
 									"-fx-min-height:35px;"+
 									"-fx-font-size:15px;"+
-									"-fx-text-fill: white;"+
+									"-fx-text-fill: white;"
+									+ "-fx-cursor: hand;"+
 									"-fx-border-radius:8px;");
 				InfoAvancar.setStyle("-fx-font-size:12px;");
-		   //				                    STYLE INFORMAÇÃO CLIENTE
+		   //				                    STYLE INFORMAÃ‡ÃƒO CLIENTE
 				PaneIC.setPrefWidth(300);
-				Infos.setPadding(new Insets(20,0,56,20));
-				Infos.setSpacing(25);
-				IC.setStyle("-fx-background-color:#EEE9E9;"+
+				Infos.setPadding(new Insets(90,0,56,20));
+				Infos.setSpacing(40);
+				Infos.setMinHeight(590);
+				Infos.setStyle("-fx-font-size: 20px; -fx-min-width: 450px;");
+				IC.setStyle("-fx-background-color:#EEE5DE;"+
 							"-fx-font-family:'Arial';"+
 							"-fx-font-size:15;");
-				IC.setMinHeight(400);
-				IC.setSpacing(20);
-				InfoCliente.setStyle("-fx-font-size:24px;");
-				InfoCliente.setPadding(new Insets(20,0,0,60));
+				IC.setAlignment(Pos.TOP_CENTER);
+				IC.setPadding(new Insets(10, 0, 0, 0));
+				InfoCliente.setStyle("-fx-font-size:24px; -fx-min-width: 450px;");
+				InfoCliente.setAlignment(Pos.CENTER);
+				//InfoCliente.setPadding(new Insets(20,0,0,60));
 				btnAvancarSDef.setStyle("-fx-background-color:#228B22;"+
-										"-fx-min-width:300px;"+
-										"-fx-min-height:50px;"+
+										"-fx-min-width: 450px;"+
+										"-fx-min-height:74px;"+
 									    "-fx-font-size: 15px;"+
-										"-fx-text-fill: white;");
+										"-fx-text-fill: white;"
+										+ "-fx-cursor: hand;"
+										+ "-fx-border-radius: none;");
+				
 	}
-	
-	  public static String contaDias(String dataInicialBR, String dataFinalBR) throws ParseException {  
-		  
-	        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");  
-	        df.setLenient(false);  
-	  
-	        Date dataInicio = df.parse(dataInicialBR);  
-	        Date dataFim = df.parse(dataFinalBR);  
-	        long dt = (dataFim.getTime() - dataInicio.getTime()) + 3600000;  
-	        Long diasCorridosAnoLong = (dt / 86400000L);  
-	  
-	        Integer diasDecorridosInt = Integer.valueOf(diasCorridosAnoLong.toString());  
-	  
-	        String diasDecorridos = String.valueOf(diasDecorridosInt); //Sem numeros formatados;  
-	  
-	        return diasDecorridos;  
-	  
-	    } 
-
-	// método para pegar a data do dia
-	    public static  String getDataDiaBr(){
-	        GregorianCalendar calendario = new GregorianCalendar();
-	        int dia = calendario.get(calendario.DAY_OF_MONTH);
-	        int mes = calendario.get(calendario.MONTH) + 1;
-	        int ano = calendario.get(calendario.YEAR);
-	        String dataIguana = String.valueOf(dia + "/" + mes + "/" + ano);
-	        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-	        String diaIguana = df.format(new Date());
-	        return diaIguana;
-	    }
-
-	// agora para calcular a idade
-	     public static BigDecimal calculaIdade(String dataDoMeuNascimento) throws ParseException{
-	        BigDecimal qtdDias = new BigDecimal(contaDias(dataDoMeuNascimento,getDataDiaBr()));
-	        BigDecimal ano = new BigDecimal(365.25);
-	        BigDecimal idade = qtdDias.divide(ano,0, RoundingMode.DOWN);
-	        
-	        return idade;        
-	    }
-	     
 	public static void main(String[]args) {
 		Application.launch(args);
 	}
 	@Override
 	public void handle(MouseEvent event) {
-		String caso=" ";
-		if(event.getSource() == btnPesquisar) {
-			long cpfFormatado = Long.parseLong(cpfCliente.getText());
-			if(cpfCliente.getText() != null) {
-				Cliente cli = cc.pesquisarCliente(cpfFormatado);
-				if(cli != null) {
-					this.nameClient.setText(cli.getPrimeiroNome());
-					this.cpfClient.setText(String.valueOf(cli.getCpf()));
-					try {
-						this.idadeClient.setText(String.valueOf(calculaIdade(String.valueOf(cli.getDt_nasc()))));
-					} catch (ParseException e) {
-						e.printStackTrace();
-					}
-					if(cli.getSexo() == 'M') {
-						caso = "Masculino";
-					}else if(cli.getSexo() == 'F'){
-						caso = "Feminino";
-					}
-					this.sexClient.setText(caso);
-					this.ruaClient.setText(cli.getEnd().getRua());
-					this.nClient.setText(String.valueOf(cli.getEnd().getNumero()));
-					this.cidadeClient.setText(cli.getEnd().getCidade());
-				}else {
-					JOptionPane.showMessageDialog(null, "Cliente Não Existe.", "Cliente inexistente.", JOptionPane.INFORMATION_MESSAGE);
-				}
-			}else {
-				JOptionPane.showMessageDialog(null, "Para pesquisar é necessario digitar o CPF.", "Cpf nulo.", JOptionPane.INFORMATION_MESSAGE);
-			}
-		}
-		if(event.getSource() == btnAvancar) {
-			if(cpfCliente != null) {
-				
-			}
-		}
-		if(event.getSource() == btnAvancarSDef) {
-
+		if(event.getSource()==btnAvancar) {
+			JOptionPane.showMessageDialog(null, "AvanÃ§ar teste!");
 		}
 	}
 }
