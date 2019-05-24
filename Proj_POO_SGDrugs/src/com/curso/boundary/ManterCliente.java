@@ -227,6 +227,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 	
 	@SuppressWarnings("unchecked")
 	public void createTableColumnsProb() {
+		
 		tblProb.setItems(cc.getDataListPS());
 		
 		TableColumn<ProblemaSaude, Number> id_problema = new TableColumn<>("ID problema");
