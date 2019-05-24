@@ -198,10 +198,11 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 	}
 	@Override
 	public void handle(MouseEvent event) {
+		String caso=" ";
 		if(event.getSource() == btnPesquisar) {
-			JOptionPane.showMessageDialog(null,"Entrou");
+			long cpfFormatado = Long.parseLong(cpfCliente.getText());
 			if(cpfCliente.getText() != null) {
-				Cliente cli = cc.pesquisarCliente(Long.parseLong(cpfCliente.getText()));
+				Cliente cli = cc.pesquisarCliente(cpfFormatado);
 				if(cli != null) {
 					this.nameClient.setText(cli.getPrimeiroNome());
 					this.cpfClient.setText(String.valueOf(cli.getCpf()));
@@ -210,7 +211,12 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
-					this.sexClient.setText(null);
+					if(cli.getSexo() == 'M') {
+						caso = "Masculino";
+					}else if(cli.getSexo() == 'F'){
+						caso = "Feminino";
+					}
+					this.sexClient.setText(caso);
 					this.ruaClient.setText(cli.getEnd().getRua());
 					this.nClient.setText(String.valueOf(cli.getEnd().getNumero()));
 					this.cidadeClient.setText(cli.getEnd().getCidade());
