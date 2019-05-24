@@ -2,7 +2,11 @@ package com.curso.boundary;
 
 import javax.swing.JOptionPane;
 
+import com.curso.control.ControlClientes;
+import com.curso.entity.Cliente;
+
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,6 +21,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class ClientePreVendas extends Application implements EventHandler<MouseEvent>{
 	// Paineis Realizar Vendas(RV) InfoCliente(IC), Grid
@@ -31,8 +43,11 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 	private Label RealVendas,InfoAvancar;
 	// info cliente
 	private Label InfoCliente,nameClient,cpfClient,idadeClient,sexClient;
-	private Label ruaClient,nClient,bairroClient;
+	private Label ruaClient,nClient,cidadeClient;
 	private Button btnAvancarSDef;
+	
+	private ControlClientes cc;
+	private Calendar time;
 	@Override
 	public void start(Stage stgPreV) throws Exception {
 		// Box REALIZAR VENDA
@@ -50,7 +65,7 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 		sexClient 			= new Label();
 		ruaClient 			= new Label();
 		nClient 			= new Label();
-		bairroClient 		= new Label();
+		cidadeClient 		= new Label();
 		btnAvancarSDef 		= new Button("AVANÇAR SEM DEFINIR CLIENTE");
 		// Paineis Realizar Venda, Informação Cliente e o grid
 		panegrid 			= new GridPane();
@@ -76,7 +91,7 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 				  				         ,new Label(" Sexo: "),sexClient)
 				  	         ,new HBox(10,new Label("Endereço: "),ruaClient
 				  	         ,new Label(", n°"),nClient
-				  	         ,new Label(" "),bairroClient));
+				  	         ,new Label(" "),cidadeClient));
 		IC 					= new VBox(InfoCliente,new Separator(),Infos,btnAvancarSDef);
 		PaneIC.getChildren().add(IC);
 		
@@ -125,7 +140,7 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 				PaneIC.setPrefWidth(300);
 				Infos.setPadding(new Insets(20,0,56,20));
 				Infos.setSpacing(25);
-				IC.setStyle("-fx-background-color:#EEE5DE;"+
+				IC.setStyle("-fx-background-color:#EEE9E9;"+
 							"-fx-font-family:'Arial';"+
 							"-fx-font-size:15;");
 				IC.setMinHeight(400);
@@ -138,13 +153,81 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 									    "-fx-font-size: 15px;"+
 										"-fx-text-fill: white;");
 	}
+	
+	  public static String contaDias(String dataInicialBR, String dataFinalBR) throws ParseException {  
+		  
+	        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");  
+	        df.setLenient(false);  
+	  
+	        Date dataInicio = df.parse(dataInicialBR);  
+	        Date dataFim = df.parse(dataFinalBR);  
+	        long dt = (dataFim.getTime() - dataInicio.getTime()) + 3600000;  
+	        Long diasCorridosAnoLong = (dt / 86400000L);  
+	  
+	        Integer diasDecorridosInt = Integer.valueOf(diasCorridosAnoLong.toString());  
+	  
+	        String diasDecorridos = String.valueOf(diasDecorridosInt); //Sem numeros formatados;  
+	  
+	        return diasDecorridos;  
+	  
+	    } 
+
+	// método para pegar a data do dia
+	    public static  String getDataDiaBr(){
+	        GregorianCalendar calendario = new GregorianCalendar();
+	        int dia = calendario.get(calendario.DAY_OF_MONTH);
+	        int mes = calendario.get(calendario.MONTH) + 1;
+	        int ano = calendario.get(calendario.YEAR);
+	        String dataIguana = String.valueOf(dia + "/" + mes + "/" + ano);
+	        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+	        String diaIguana = df.format(new Date());
+	        return diaIguana;
+	    }
+
+	// agora para calcular a idade
+	     public static BigDecimal calculaIdade(String dataDoMeuNascimento) throws ParseException{
+	        BigDecimal qtdDias = new BigDecimal(contaDias(dataDoMeuNascimento,getDataDiaBr()));
+	        BigDecimal ano = new BigDecimal(365.25);
+	        BigDecimal idade = qtdDias.divide(ano,0, RoundingMode.DOWN);
+	        
+	        return idade;        
+	    }
+	     
 	public static void main(String[]args) {
 		Application.launch(args);
 	}
 	@Override
 	public void handle(MouseEvent event) {
-		if(event.getSource()==btnAvancar) {
-			JOptionPane.showMessageDialog(null, "Avançar teste!");
+		if(event.getSource() == btnPesquisar) {
+			JOptionPane.showMessageDialog(null,"Entrou");
+			if(cpfCliente.getText() != null) {
+				Cliente cli = cc.pesquisarCliente(Long.parseLong(cpfCliente.getText()));
+				if(cli != null) {
+					this.nameClient.setText(cli.getPrimeiroNome());
+					this.cpfClient.setText(String.valueOf(cli.getCpf()));
+					try {
+						this.idadeClient.setText(String.valueOf(calculaIdade(String.valueOf(cli.getDt_nasc()))));
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+					this.sexClient.setText(null);
+					this.ruaClient.setText(cli.getEnd().getRua());
+					this.nClient.setText(String.valueOf(cli.getEnd().getNumero()));
+					this.cidadeClient.setText(cli.getEnd().getCidade());
+				}else {
+					JOptionPane.showMessageDialog(null, "Cliente Não Existe.", "Cliente inexistente.", JOptionPane.INFORMATION_MESSAGE);
+				}
+			}else {
+				JOptionPane.showMessageDialog(null, "Para pesquisar é necessario digitar o CPF.", "Cpf nulo.", JOptionPane.INFORMATION_MESSAGE);
+			}
+		}
+		if(event.getSource() == btnAvancar) {
+			if(cpfCliente != null) {
+				
+			}
+		}
+		if(event.getSource() == btnAvancarSDef) {
+
 		}
 	}
 }
