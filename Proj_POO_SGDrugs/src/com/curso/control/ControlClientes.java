@@ -90,6 +90,8 @@ public class ControlClientes {
 	public ObservableList<ProblemaSaude> getDataListPS(){
 		return this.dataListPS;
 	}
+
+//MANTER CLIENTE ------------------------------------------------------
 	
 	public void cadCliente(Cliente cl) {
 		if(!existCliente(cl.getCpf())) {
@@ -98,66 +100,6 @@ public class ControlClientes {
 		}else {
 			JOptionPane.showMessageDialog(null, "Cliente já esta cadastrado no sistema !!!");
 		}
-	}
-	
-	public void cadProb(ProblemaSaude ps) {
-		if(!existProb(ps.getId_problema())) {
-			
-		}else {
-			
-		}
-	}
-	
-	public void attCliente(Cliente cl) {
-		for(Cliente c : clientesCadastrados) {
-			if(c.getCpf() == clientSel.getCpf()) {
-				c.setPrimeiroNome(cl.getPrimeiroNome());
-				c.setDt_nasc(cl.getDt_nasc());
-				c.setRg(cl.getRg());
-				c.setCpf(cl.getCpf());
-				c.setTelefone(cl.getTelefone());
-				c.setEmail(cl.getEmail());
-				c.setCartaoSUS(cl.getCartaoSUS());
-				c.getEnd().setCep(cl.getEnd().getCep());
-				c.getEnd().setRua(cl.getEnd().getRua());
-				c.getEnd().setNumero(cl.getEnd().getNumero());
-				c.getEnd().setCidade(cl.getEnd().getUf());
-				c.setProblemasSaude(cl.getProblemasSaude());
-			}
-		}
-	}
-	
-	private void attTableCliente() {
-		this.dataList.clear();
-		this.dataList.addAll(clientesCadastrados);
-	}
-	
-	public void attTableProb(List<ProblemaSaude> list) {
-		this.dataListPS.clear();
-		this.dataListPS.addAll(list);
-	}
-	
-	public void attTableProb() {
-		this.dataListPS.clear();
-		this.dataListPS.addAll(clientSel.getProblemasSaude());
-	}
-	
-	private boolean existCliente(long cpf) {
-		for(Cliente c : clientesCadastrados) {
-			if(c.getCpf() == cpf) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	private boolean existProb(int id) {
-		for(ProblemaSaude ps : problemasCadastrados) {
-			if(ps.getId_problema() == id) {
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	public void pesquisarCliente(String nome, long cpf, String uf, String cidade) {
@@ -180,6 +122,63 @@ public class ControlClientes {
 		return new Cliente();
 	}
 	
+	private boolean existCliente(long cpf) {
+		for(Cliente c : clientesCadastrados) {
+			if(c.getCpf() == cpf) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void removerCliente() {
+		this.clientesCadastrados.remove(pesquisarCliente(clientSel.getCpf()));
+		this.attTableCliente();
+	}
+	
+	public void attCliente(Cliente cl) {
+		for(Cliente c : clientesCadastrados) {
+			if(c.getCpf() == clientSel.getCpf()) {
+				c.setPrimeiroNome(cl.getPrimeiroNome());
+				c.setDt_nasc(cl.getDt_nasc());
+				c.setRg(cl.getRg());
+				c.setCpf(cl.getCpf());
+				c.setTelefone(cl.getTelefone());
+				c.setEmail(cl.getEmail());
+				c.setCartaoSUS(cl.getCartaoSUS());
+				c.getEnd().setCep(cl.getEnd().getCep());
+				c.getEnd().setRua(cl.getEnd().getRua());
+				c.getEnd().setNumero(cl.getEnd().getNumero());
+				c.getEnd().setCidade(cl.getEnd().getUf());
+				c.setProblemasSaude(cl.getProblemasSaude());
+				c.setSexo(cl.getSexo());
+			}
+		}
+	}
+	
+//FIM MANTER CLIENTE-----------------------------------------------------------------
+	
+//MANTER PROBLEMA--------------------------------------------------------------------
+	
+	public void cadProb(ProblemaSaude ps) {
+		if(!existProb(ps.getId_problema())) {
+			
+		}else {
+			
+		}
+	}
+	
+	private boolean existProb(int id) {
+		for(ProblemaSaude ps : problemasCadastrados) {
+			if(ps.getId_problema() == id) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
+	
 	public ProblemaSaude pesquisarProb(String desc) {
 		for(ProblemaSaude ps : problemasCadastrados) {
 			if(ps.getDesc_problema().equals(desc)) {
@@ -191,10 +190,6 @@ public class ControlClientes {
 	
 	public void addProblema(ProblemaSaude ps) {
 		this.problemasCadastrados.add(ps);
-	}
-	
-	public void addEndereco(Endereco ed) {
-		this.enderecoCadastrados.add(ed);
 	}
 	
 	public void procurarProblema(ProblemaSaude ps) {
@@ -209,25 +204,6 @@ public class ControlClientes {
 			addProblema(ps);
 		}
 		dataListPS.add(ps);
-	}
-	
-	public Endereco procurarEndereco(Endereco ed) {
-		boolean addEd = true;
-		for(Endereco e : enderecoCadastrados) {
-			if(e.getCep() == ed.getCep()) {
-				addEd = false;
-				break;
-			}
-		}
-		if(addEd) {
-			addEndereco(ed);
-		}
-		return ed;
-	}
-	
-	public void removerCliente() {
-		this.clientesCadastrados.remove(pesquisarCliente(clientSel.getCpf()));
-		this.attTableCliente();
 	}
 	
 	public void removerProb(int id) {
@@ -247,5 +223,50 @@ public class ControlClientes {
 			attTableProb();
 		}
 	}
+	
+//FIM MANTER PROBLEMA----------------------------------------------------------------
+	
+//MANTER TABELAS---------------------------------------------------------------------
+
+	private void attTableCliente() {
+		this.dataList.clear();
+		this.dataList.addAll(clientesCadastrados);
+	}
+	
+	public void attTableProb(List<ProblemaSaude> list) {
+		this.dataListPS.clear();
+		this.dataListPS.addAll(list);
+	}
+	
+	public void attTableProb() {
+		this.dataListPS.clear();
+		this.dataListPS.addAll(clientSel.getProblemasSaude());
+	}
+	
+//FIM MANTER TABELAS-----------------------------------------------------------------
+	
+//MANTER ENDEREÇO--------------------------------------------------------------------
+	
+	public void addEndereco(Endereco ed) {
+		this.enderecoCadastrados.add(ed);
+	}
+	
+	
+	
+	public Endereco procurarEndereco(Endereco ed) {
+		boolean addEd = true;
+		for(Endereco e : enderecoCadastrados) {
+			if(e.getCep() == ed.getCep()) {
+				addEd = false;
+				break;
+			}
+		}
+		if(addEd) {
+			addEndereco(ed);
+		}
+		return ed;
+	}
+
+//FIM MANTER ENDEREÇO----------------------------------------------------------------
 	
 }

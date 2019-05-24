@@ -13,6 +13,7 @@ public class Cliente {
 	private long rg, cpf, telefone;
 	private String email;
 	private long cartaoSUS;
+	private char sexo;
 	private Endereco end;
 	private List<ProblemaSaude> problemasSaude;
 	
@@ -23,6 +24,14 @@ public class Cliente {
 		this.btnEditar = new Button("Editar");
 		this.btnExcluir = new Button("Excluir");
 		this.problemasSaude = new ArrayList<ProblemaSaude>();
+	}
+	
+	public char getSexo() {
+		return sexo;
+	}
+
+	public void setSexo(char sexo) {
+		this.sexo = sexo;
 	}
 	
 	public Button getBtnEditar() {
