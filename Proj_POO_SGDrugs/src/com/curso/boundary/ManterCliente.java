@@ -1,6 +1,7 @@
 package com.curso.boundary;
 
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -23,11 +24,13 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
@@ -38,6 +41,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class ManterCliente extends Application implements EventHandler<MouseEvent>{
@@ -60,6 +64,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 	private TextField txtCPFPesquisa;
 	private TextField txtUFPesquisa;
 	private TextField txtCidadePesquisa;
+	private ComboBox<String> cmbSexo;
 	private TableView<Cliente> tblCli;
 	private TableView<ProblemaSaude> tblProb;
 	private List<ProblemaSaude> ps;
@@ -95,6 +100,8 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		txtNum = new TextField();
 		txtCid = new TextField();
 		txtUF = new TextField();
+		cmbSexo = new ComboBox<String>(FXCollections.observableArrayList(new String[]{"M", "F"}));
+		cmbSexo.getSelectionModel().select(0);
 		
 		txtPesquisa = new TextField();
 		txtPesquisa.setPromptText("Insira a descrição do problema");
@@ -122,7 +129,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 				new HBox(10, new Label("Data Nascimento: "), txtDia, new Label("/"), txtMes, new Label("/"),txtAno),
 				new HBox(10, new Label("RG: "), txtRG, new Label("CPF: "), txtCPF),
 				new HBox(10, new Label("Telefone: "), txtTelefone, new Label("Email:"), txtEmail),
-				new HBox(10, new Label("Cartão SUS: "), txtCartaoSus)
+				new HBox(10, new Label("Cartão SUS: "), txtCartaoSus, new Label("Sexo: "), cmbSexo)
 		);
 		entradaInfoCli.setSpacing(10);
 		entradaInfoCli.setStyle("-fx-min-width: 50%; -fx-font-size: 15px;");
@@ -293,6 +300,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 				Cliente c = cc.pesquisarCliente((long) tblCli.getItems().get(l).getCpf());
 				ControlClientes.clientSel = c;
 				clienteToBoundary(c);
+				System.out.println(c.getSexo());
 				painelCad.toFront();
 				btnSelected(0);
 				cc.attTableProb(c.getProblemasSaude());
@@ -330,6 +338,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		this.txtNum.setText(Integer.toString(ed.getNumero()));
 		this.txtCid.setText(ed.getCidade());
 		this.txtUF.setText(ed.getUf());
+		this.cmbSexo.getSelectionModel().select(String.valueOf(c.getSexo()));
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -342,6 +351,8 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		c.setTelefone(Long.parseLong(this.txtTelefone.getText()));
 		c.setEmail(this.txtEmail.getText());
 		c.setCartaoSUS(Long.parseLong(this.txtCartaoSus.getText()));
+		System.out.println(cmbSexo.getSelectionModel().getSelectedItem().charAt(0));
+		c.setSexo(cmbSexo.getSelectionModel().getSelectedItem().charAt(0));
 		
 		Endereco ed = new Endereco();
 		ed.setCep(this.txtCEP.getText());
@@ -408,6 +419,10 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 				+ "-fx-background-color: #0095FE;"
 				+ "-fx-cursor: hand;";
 		
+		String comboStyle = "-fx-background-radius: 8;"
+				+ "-fx-background-color: #FEFFFA;"
+				+ "-fx-cursor: hand";
+		
 		btnCadCli.setStyle(styleBtn);
 		btnMantCli.setStyle(styleBtn);
 		painelCad.setStyle(stylePainel);
@@ -421,7 +436,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		txtCPF.setStyle("-fx-min-width: 259px;" + styleEntradas);
 		txtTelefone.setStyle("-fx-max-width: 186px;" + styleEntradas);
 		txtEmail.setStyle("-fx-min-width: 253px;" + styleEntradas);
-		txtCartaoSus.setStyle("-fx-min-width: 480px;" + styleEntradas);
+		txtCartaoSus.setStyle("-fx-min-width: 355px;" + styleEntradas);
 		txtCEP.setStyle("-fx-min-width: 530px; " + styleEntradas);
 		txtRua.setStyle("-fx-min-width: 228px; " + styleEntradas);
 		txtNum.setStyle("-fx-min-width: 227px; " + styleEntradas);
@@ -437,6 +452,8 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		txtUFPesquisa.setStyle("-fx-min-width: 200px;" + styleEntradas);
 		txtCidadePesquisa.setStyle("-fx-min-width: 262px;" + styleEntradas);
 		btnPesquisa.setStyle(styleBtnPesquisa);
+		cmbSexo.setStyle(comboStyle);
+		cmbSexo.setEffect(new DropShadow(4, 0, 0, Color.GRAY));
 	}
 	
 	public void btnSelected(int btn) {
