@@ -89,10 +89,12 @@ public class Cliente {
 		this.end = end;
 	}
 	public List<ProblemaSaude> getProblemasSaude() {
-		return problemasSaude;
+		return this.problemasSaude;
 	}
 	public void setProblemasSaude(List<ProblemaSaude> problemasSaude) {
-		this.problemasSaude = problemasSaude;
+		if(problemasSaude != null) {
+			this.problemasSaude = problemasSaude;
+		}
 	}
 	
 	public boolean existProb(int id) {

@@ -5,12 +5,16 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.EventObject;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.swing.event.ChangeEvent;
 
 import com.curso.control.ControlClientes;
 import com.curso.entity.Cliente;
@@ -25,6 +29,7 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -35,6 +40,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -217,12 +224,72 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		btnAddProb.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
 		btnLimpaCampos.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
 		btnPesquisaProb.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
+		//txtNome.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
 		
+		addEventosFoco();
 		startStyle();
 		btnSelected(0);
 		createTableColumnsProb();
 		createTableColumnsClientes();
 		
+	}
+	
+	private void addEventosFoco() {
+		txtNome.focusedProperty().addListener(e -> {
+			txtNome.setStyle(txtNome.getStyle() + "-fx-border-color: none;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+		});
+		txtDia.focusedProperty().addListener(e -> {
+			txtDia.setStyle(txtDia.getStyle() + "-fx-border-color: none;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+		});
+		txtMes.focusedProperty().addListener(e -> {
+			txtMes.setStyle(txtMes.getStyle() + "-fx-border-color: none;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+		});
+		txtAno.focusedProperty().addListener(e -> {
+			txtAno.setStyle(txtAno.getStyle() + "-fx-border-color: none;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+		});
+		txtRG.focusedProperty().addListener(e -> {
+			txtRG.setStyle(txtRG.getStyle() + "-fx-border-color: none;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+		}); 
+		txtCPF.focusedProperty().addListener(e -> {
+			txtCPF.setStyle(txtCPF.getStyle() + "-fx-border-color: none;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+		});
+		txtCEP.focusedProperty().addListener(e -> {
+			txtCEP.setStyle(txtCEP.getStyle() + "-fx-border-color: none;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+		});
+		txtRua.focusedProperty().addListener(e -> {
+			txtRua.setStyle(txtRua.getStyle() + "-fx-border-color: none;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+		});
+		txtNum.focusedProperty().addListener(e -> {
+			txtNum.setStyle(txtNum.getStyle() + "-fx-border-color: none;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+		});
+		txtCid.focusedProperty().addListener(e -> {
+			txtCid.setStyle(txtCid.getStyle() + "-fx-border-color: none;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+		});
+		txtUF.focusedProperty().addListener(e -> {
+			txtUF.setStyle(txtUF.getStyle() + "-fx-border-color: none;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+		});
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -344,14 +411,19 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 	
 	@SuppressWarnings("deprecation")
 	public Cliente boundaryToCliente() {
+		
 		Cliente c = new Cliente();
 		c.setPrimeiroNome(this.txtNome.getText());
 		c.setDt_nasc(new Date(Integer.parseInt(this.txtAno.getText()), Integer.parseInt(this.txtMes.getText()), Integer.parseInt(this.txtDia.getText())));
 		c.setRg(Long.parseLong(this.txtRG.getText()));
 		c.setCpf(Long.parseLong(this.txtCPF.getText()));
-		c.setTelefone(Long.parseLong(this.txtTelefone.getText()));
+		if(!this.txtTelefone.getText().equals("")) {
+			c.setTelefone(Long.parseLong(this.txtTelefone.getText()));
+		}
 		c.setEmail(this.txtEmail.getText());
-		c.setCartaoSUS(Long.parseLong(this.txtCartaoSus.getText()));
+		if(!this.txtCartaoSus.getText().equals("")) {
+			c.setCartaoSUS(Long.parseLong(this.txtCartaoSus.getText()));
+		}
 		System.out.println(cmbSexo.getSelectionModel().getSelectedItem().charAt(0));
 		c.setSexo(cmbSexo.getSelectionModel().getSelectedItem().charAt(0));
 		
@@ -362,7 +434,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		ed.setCidade(this.txtCid.getText());
 		ed.setUf(this.txtUF.getText());
 		c.setEnd(ed);
-	
+		
 		c.setProblemasSaude(ControlClientes.clientSel.getProblemasSaude());
 		return c;
 	}
@@ -498,17 +570,21 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 			btnSelected(1);
 		}else
 		if(e.getSource() == btnCadastrar) {
-			if(btnCadastrar.getText().equals("CADASTRAR")) {
+			if(btnCadastrar.getText().equals("CADASTRAR") && camposValidos()) {
 				JOptionPane.showMessageDialog(null, "cadastro realizado !!!", "Cadastro", JOptionPane.INFORMATION_MESSAGE);
-				cc.cadCliente(boundaryToCliente());
+				if(cc.cadCliente(boundaryToCliente())) {
+					limparCampos();
+				}
 				tblCli.refresh();
-			}else {
+				setFunctionCliButtons();
+			}else 
+			if(btnCadastrar.getText().equals("ALTERAR") && camposValidos()){
 				cc.attCliente(boundaryToCliente());
 				JOptionPane.showMessageDialog(null, "Alterações realizadas com sucesso", "Alteração concluida", JOptionPane.INFORMATION_MESSAGE);
 				tblCli.refresh();
+				limparCampos();
+				setFunctionCliButtons();
 			}
-			limparCampos();
-			setFunctionCliButtons();
 		}else
 		if(e.getSource() == btnAddProb) {
 			ProblemaSaude ps = cc.pesquisarProb(this.txtPesquisa.getText());
@@ -519,6 +595,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 				ControlClientes.clientSel.getProblemasSaude().add(ps);
 			}
 			cc.attTableProb();
+			setFunctionProbButtons();
 		}else
 		if(e.getSource() == btnLimpaCampos) {
 			limparCampos();
@@ -533,6 +610,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 					ControlClientes.clientSel.getProblemasSaude().add(ps);
 				}
 				cc.attTableProb();
+				setFunctionProbButtons();
 			}else {
 				JOptionPane.showMessageDialog(null, "Problema não encontrado");
 			}
@@ -559,6 +637,81 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		this.txtUF.setText("");
 		this.txtPesquisa.setText("");
 		cc.attTableProb(new ArrayList<ProblemaSaude>());
+		ControlClientes.clientSel = new Cliente();
+	}
+	
+	private boolean camposValidos() {
+		boolean isValid = true;
+		if(this.txtNome.getText().equals("")) {
+			this.txtNome.setStyle(this.txtNome.getStyle() + "-fx-border-color: red;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+			isValid = false;
+		}
+		if(this.txtDia.getText().equals("")) {
+			this.txtDia.setStyle(this.txtDia.getStyle() + "-fx-border-color: red;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+			isValid = false;
+		}
+		if(this.txtMes.getText().equals("")) {
+			this.txtMes.setStyle(this.txtMes.getStyle() + "-fx-border-color: red;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+			isValid = false;
+		}
+		if(this.txtAno.getText().equals("")) {
+			this.txtAno.setStyle(this.txtAno.getStyle() + "-fx-border-color: red;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+			isValid = false;
+		}
+		if(this.txtRG.getText().equals("")) {
+			this.txtRG.setStyle(this.txtRG.getStyle() + "-fx-border-color: red;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+			isValid = false;
+		}
+		if(this.txtCPF.getText().equals("")) {
+			this.txtCPF.setStyle(this.txtCPF.getStyle() + "-fx-border-color: red;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+			isValid = false;
+		}
+		if(this.txtCEP.getText().equals("")) {
+			this.txtCEP.setStyle(this.txtCEP.getStyle() + "-fx-border-color: red;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+			isValid = false;
+		}
+		if(this.txtRua.getText().equals("")) {
+			this.txtRua.setStyle(this.txtRua.getStyle() + "-fx-border-color: red;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+			isValid = false;
+		}
+		if(this.txtNum.getText().equals("")) {
+			this.txtNum.setStyle(this.txtNum.getStyle() + "-fx-border-color: red;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+			isValid = false;
+		}
+		if(this.txtCid.getText().equals("")) {
+			this.txtCid.setStyle(this.txtCid.getStyle() + "-fx-border-color: red;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+			isValid = false;
+		}
+		if(this.txtUF.getText().equals("")) {
+			this.txtUF.setStyle(this.txtUF.getStyle() + "-fx-border-color: red;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+			isValid = false;
+		}
+		if(!isValid) {
+			JOptionPane.showMessageDialog(null, "Alguns campos obrigatórios nao foram preenchidos.\nPor favor preencha os campos com borda vermelha.", "Ops...", JOptionPane.ERROR_MESSAGE);
+		}
+		return isValid;
 	}
 
 }

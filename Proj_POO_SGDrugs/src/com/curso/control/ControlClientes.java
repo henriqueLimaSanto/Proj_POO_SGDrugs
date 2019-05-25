@@ -21,7 +21,7 @@ public class ControlClientes {
 	private List<ProblemaSaude> problemasCadastrados;
 	private ObservableList<Cliente> dataList = FXCollections.observableArrayList();
 	private ObservableList<ProblemaSaude> dataListPS = FXCollections.observableArrayList();
-	public static Cliente clientSel;
+	public static Cliente clientSel = new Cliente();
 	
 	public ControlClientes() {
 		this.clientesCadastrados = new ArrayList<Cliente>();
@@ -93,12 +93,14 @@ public class ControlClientes {
 
 //MANTER CLIENTE ------------------------------------------------------
 	
-	public void cadCliente(Cliente cl) {
+	public boolean cadCliente(Cliente cl) {
 		if(!existCliente(cl.getCpf())) {
 			this.clientesCadastrados.add(cl);
 			attTableCliente();
+			return true;
 		}else {
 			JOptionPane.showMessageDialog(null, "Cliente já esta cadastrado no sistema !!!");
+			return false;
 		}
 	}
 	
