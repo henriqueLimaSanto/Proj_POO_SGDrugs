@@ -81,7 +81,7 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		btnAdicionar.setPrefSize(140, 25);
 
 		btnFinalizar = new Button("FINALIZAR COMPRA");
-		btnFinalizar.setPrefSize(425, 70);
+		btnFinalizar.setPrefSize(516, 105);
 
 		txtPesquisa = new TextField();
 		txtPesquisa.setPrefSize(200, 25);
@@ -107,7 +107,7 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		VBox entradaProduto = new VBox(new Label("Adicionar Produto"), new Separator(),
 				new HBox(10, txtPesquisa, btnPesquisar), new HBox(10, txtQuantidade, btnAdicionar),
 				new HBox(10, lblValorUnt), new HBox(10, lblQuantidade));
-		entradaProduto.setPadding(new Insets(120, 60, 50, 20));
+		entradaProduto.setPadding(new Insets(130, 60, 50, 20));
 		entradaProduto.setSpacing(10);
 		entradaProduto.setStyle("-fx-min-width: 50%; -fx-font-size: 15px; ");
 
@@ -117,23 +117,23 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		formaPagamento.setSpacing(10);
 		formaPagamento.setStyle("-fx-min-width: 50%; -fx-font-size: 15px; ");
 
-		VBox finalizar = new VBox(new HBox(40, btnFinalizar));
-		finalizar.setPadding(new Insets(80, 0, 0, 0));
+		HBox finalizar = new HBox(btnFinalizar);
+		finalizar.setPadding(new Insets(-20, 0, 20, 0));
 		finalizar.setStyle("-fx-min-width: 50%; -fx-font-size: 15px; ");
 
 		VBox entradaItens = new VBox(new HBox(tblItens));
 		entradaItens.setPadding(new Insets(140, 0, 100, 50));
 
 		HBox HCompra = new HBox(new VBox(entradaProduto, formaPagamento, finalizar));
-		HCompra.setStyle("-fx-background-color: #E3E8EE;");
-		HCompra.setPadding(new Insets(0, 50, 100, 50));
+		HCompra.setStyle("-fx-background-color: #FFE4C7;");
+		HCompra.setPadding(new Insets(0, 60, 85, 45));
 
 		HBox HItens = new HBox(new VBox(entradaItens));
 		HItens.setStyle("-fx-background-color: rgb(242,242,242)");
 		HItens.setPadding(new Insets(0, 100, 100, 50));
 
-		HBox geral = new HBox(new VBox(HItens), new VBox(HCompra));
-		geral.setPadding(new Insets(0, 1300, 50, 0));
+		HBox geral = new HBox(new VBox(HItens), new VBox(HCompra, finalizar));
+		geral.setPadding(new Insets(0, 1280, 50, 0));
 		geral.setSpacing(50);
 		geral.setStyle("-fx-background-color: rgb(237,237,237);");
 
@@ -154,11 +154,15 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 
 		String styleEntradas = "-fx-background-radius: 8;";
 
-		String styleBtnAdd = "-fx-background-color: #0095FE;" + "-fx-text-fill: white;";
+		String styleBtnPesq = "-fx-background-color: #0095FE;";
+		String styleBtnAdd = "-fx-background-color: #007F0E;" + "-fx-text-fill: white;";
 
-		String styleBtnFinaliza = "-fx-background-color: #007F0E;" + "-fx-text-fill: white;";
-
-		btnPesquisar.setStyle(styleBtnAdd);
+		String styleBtnFinaliza = "-fx-background-color: #007F0E;" 
+								+ "-fx-text-fill: white;"
+								+ "-fx-font-size: 35px;"
+								+ "-fx-background-radius: none;";
+		
+		btnPesquisar.setStyle(styleBtnPesq);
 		btnAdicionar.setStyle(styleBtnAdd);
 		btnFinalizar.setStyle(styleBtnFinaliza);
 		painelVenda.setStyle(stylePainelVendas);
