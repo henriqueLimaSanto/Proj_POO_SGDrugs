@@ -121,7 +121,7 @@ public class ControlClientes {
 				return c;
 			}
 		}
-		return new Cliente();
+		return null;
 	}
 	
 	private boolean existCliente(long cpf) {
@@ -151,7 +151,8 @@ public class ControlClientes {
 				c.getEnd().setCep(cl.getEnd().getCep());
 				c.getEnd().setRua(cl.getEnd().getRua());
 				c.getEnd().setNumero(cl.getEnd().getNumero());
-				c.getEnd().setCidade(cl.getEnd().getUf());
+				c.getEnd().setCidade(cl.getEnd().getCidade());
+				c.getEnd().setUf(cl.getEnd().getUf());
 				c.setProblemasSaude(cl.getProblemasSaude());
 				c.setSexo(cl.getSexo());
 			}
@@ -230,9 +231,14 @@ public class ControlClientes {
 	
 //MANTER TABELAS---------------------------------------------------------------------
 
-	private void attTableCliente() {
+	public void attTableCliente() {
 		this.dataList.clear();
 		this.dataList.addAll(clientesCadastrados);
+	}
+	
+	public void attTableCliente(Cliente cl) {
+		this.dataList.clear();
+		this.dataList.add(cl);
 	}
 	
 	public void attTableProb(List<ProblemaSaude> list) {
@@ -270,5 +276,16 @@ public class ControlClientes {
 	}
 
 //FIM MANTER ENDEREÇO----------------------------------------------------------------
+	
+	public String[] gerarArrayNum(int init, int fim) {
+		int tam = (fim-init) + 1;
+		int vl = init;
+		String[] arrayNum = new String[tam];
+		for(int i=0; i<tam; i++) {
+			arrayNum[i] = Integer.toString(vl);
+			vl++;
+		}
+		return arrayNum;
+	}
 	
 }
